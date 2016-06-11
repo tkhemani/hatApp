@@ -15,8 +15,8 @@ describe('App: Hat', () => {
     expect(app).toBeTruthy();
   }));
 
-  it('should have as title \'hat works!\'',
-      inject([HatAppComponent], (app: HatAppComponent) => {
-    expect(app.title).toEqual('hat works!');
-  }));
+//   it('should have as title \'hat works!\'',
+//       inject([HatAppComponent], (app: HatAppComponent) => {
+//     expect(app.title).toEqual('hat works!');
+//   }));
 });
