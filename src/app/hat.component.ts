@@ -21,7 +21,7 @@ declare var _:any;
 })
 
 export class HatAppComponent {
-
+challengeAddMoreState = false;
   //heroes = ['Windstorm', 'Bombasto', 'Magneta', 'Tornado'];
   //testitem = { name: "test", cards: [1,2] };
   otherPlayerName = null;
@@ -48,7 +48,8 @@ export class HatAppComponent {
   root = null;
   playerName = "";
  // player = null;
- localCopy = {"winnerName": "", resetState: false, "p1": ["X"], "p2": ["X"], "turnCards": ["X"], "playAs": "", "whoseTurn":"p1", "cardOptions": this.cardOptions};
+ //localCopy = {}
+ localCopy = {"cardCache": [], "whoPassed" : "", "winnerName": "", resetState: false, "p1": ["X"], "p2": ["X"], "turnCards": ["X"], "playAs": "", "whoseTurn":"p1", "cardOptions": this.cardOptions};
   //localCopy = {};
   constructor(af: AngularFire) {
     ;
@@ -73,6 +74,7 @@ that.myTurn = (that.localCopy.whoseTurn == that.playerName);
   that.challengeState = true;
   that.localCopy.turnCards.shift();
 }
+//if(that.localCopy.cardCache.length > 1)
     }
 
       });
@@ -106,13 +108,14 @@ that.myTurn = (that.localCopy.whoseTurn == that.playerName);
   }
 
   resetGame() {    
-     this.localCopy = {"winnerName": "", "resetState": true, "p1": ["X"], "p2": ["X"], "turnCards": ["X"], "playAs": "", "whoseTurn":"p1", "cardOptions": this.cardOptions};
+     this.localCopy = {cardCache: [], whoPassed: "", "winnerName": "", "resetState": true, "p1": ["X"], "p2": ["X"], "turnCards": ["X"], "playAs": "", "whoseTurn":"p1", "cardOptions": this.cardOptions};
      this.syncDB();
      this.gameStarted = false;
   }
   cardOptionClicked(card) {
  if(this.myTurn && !this.challengeState) {
-       if(!card.selected){
+      if(!this.challengeAddMoreState) {
+         if(!card.selected){
      this.localCopy.playAs = card.value;     
       this.localCopy.cardOptions.forEach(n => n.selected = false);
       card.selected = true;
@@ -122,6 +125,7 @@ that.myTurn = (that.localCopy.whoseTurn == that.playerName);
 //}     
 card.selected = false;
     }
+      }
     }
   }
 
@@ -136,6 +140,40 @@ card.selected = false;
   cardForChallengeClicked(card) {
     console.log(card);
   }
+
+challengeAddMore () {
+// add current turnCards to cache
+if(!this.localCopy.cardCache) {
+  this.localCopy.cardCache = [];
+}
+this.localCopy.cardCache.concat(this.localCopy.turnCards);
+this.localCopy.turnCards = ["X"];
+this.challengeState = false;
+this.challengeAddMoreState = true
+}
+
+challengePass() {
+  // the opponent can now add more cards OR close the round
+  //I can only pass or challenge from next time
+this.challengeState = false;
+this.localCopy.whoPassed = this.playerName;
+this.localCopy.cardCache.concat(this.localCopy.turnCards);
+this.localCopy.turnCards = ["X"];
+this.localCopy.whoseTurn = this.otherPlayerName;
+this.syncDB();
+}
+
+roundComplete() {
+  //discard the cache and reset the whoPassed 
+  this.localCopy.whoPassed = "";
+this.localCopy.cardCache = [];
+this.challengeState = false;
+this.challengeAddMoreState = false;
+this.localCopy.turnCards = ["X"];
+this.localCopy.whoseTurn = this.playerName;
+this.syncDB();
+
+}
 
 challengeYes(){
 var fraud = false; 
@@ -155,13 +193,27 @@ if(!fraud) {
     //other player won
     this.localCopy.winnerName = this.otherPlayerName;
   } else {
+    if(this.localCopy.whoPassed != ""){  // if round is old ie whoPassed is not empty
+ this.localCopy.cardCache.forEach(function(n){
+  that.localCopy[that.playerName].push({value:n, selected: false});
+})
+    }
+
       this.localCopy.turnCards.forEach(function(n){
   that.localCopy[that.playerName].push({value:n, selected: false});
 })
 this.localCopy.whoseTurn = this.otherPlayerName;
+    
+      
   }
 
 } else {
+  if(this.localCopy.whoPassed != ""){  // if round is old ie whoPassed is not empty
+ this.localCopy.cardCache.forEach(function(n){
+  that.localCopy[that.otherPlayerName].push({value:n, selected: false});
+})
+    }
+    
    that.localCopy.turnCards.forEach(function(n){
   that.localCopy[that.otherPlayerName].push({value:n, selected: false});
 })
@@ -187,6 +239,16 @@ syncDB() {
     this.localCopy.turnCards.splice(this.localCopy.turnCards.indexOf(card.value), 1);
 //}     
 card.selected = false;
+    }
+
+    if(this.challengeAddMoreState) {
+       this.localCopy.cardOptions.forEach(n => {
+         if(n.value != this.localCopy.playAs) {
+           n.selected = false
+         } else {
+           n.selected = true
+         }
+         });
     }
     }
   }

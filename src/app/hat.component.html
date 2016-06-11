@@ -38,7 +38,9 @@
 </li> -->
 
 
-<md-card [class.hideGame]="!(challengeState && myTurn && gameStarted)">
+<md-card style="
+    margin-top: 10px;
+" [class.hideGame]="!(challengeState && myTurn && gameStarted)">
 <md-card-title>Challenge (Played as {{localCopy.playAs}}) ? 
 </md-card-title>
 <md-card-content>
@@ -51,16 +53,23 @@
     </div>
 </md-card-content>
 <md-card-actions align="start">
-        <button (click)="challengeYes()" md-button color="primary">YES</button>
-                <button (click)="challengeNo()" md-button color="primary">NO</button>
-                <button (click)="challengePass()" md-button color="primary">PASS</button>
+        <span *ngIf="localCopy.whoPassed == ''"> 
+                <button  (click)="challengeYes()" md-button color="primary">YES</button>
+         <button (click)="challengePass()" md-button color="primary">PASS</button>
                 <button (click)="challengeAddMore()" md-button color="primary">ADD MORE</button>
-
+                </span>
+        <span *ngIf="localCopy.whoPassed != ''"> </span>
+                        <button  *ngIf="localCopy.whoPassed == playerName" (click)="challengeYes()" md-button color="primary">YES</button>
+                <button *ngIf="localCopy.whoPassed == playerName" (click)="challengePass()" md-button color="primary">PASS</button>
+                <button *ngIf="localCopy.whoPassed == otherPlayerName" (click)="challengeAddMore()" md-button color="primary">ADD MORE</button>
+                <button *ngIf="localCopy.whoPassed == otherPlayerName" (click)="roundComplete()" md-button color="primary">DONE</button>
       </md-card-actions>
 </md-card>
 
 
-<md-card [class.hideGame]="!gameStarted">
+<md-card style="
+    margin-top: 10px;
+" [class.hideGame]="!gameStarted">
 <md-card-title>Your Cards... 
 </md-card-title>
 <md-card-content>
@@ -70,10 +79,14 @@
 <!--     <span md-line>test</span> -->
     </md-card>
     </div>
+
+          <div *ngIf="localCopy.cardCache && localCopy.whoPassed != ''">Cards in Cache : {{localCopy.cardCache.length}}</div>
 </md-card-content>
 </md-card>
 
-<md-card [class.hideGame]="!(localCopy.turnCards.length >1 && myTurn && !challengeState)">
+<md-card style="
+    margin-top: 10px;
+" [class.hideGame]="!(localCopy.turnCards.length >1 && myTurn && !challengeState)">
 <md-card-title>Play Selected As...</md-card-title>
 <md-card-content>
 <div  class="card-container  wrap" >
