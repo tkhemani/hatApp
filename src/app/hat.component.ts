@@ -74,6 +74,9 @@ that.myTurn = (that.localCopy.whoseTurn == that.playerName);
   that.challengeState = true;
   that.localCopy.turnCards.shift();
 }
+if(that.localCopy.whoPassed != that.localCopy.whoseTurn) {
+    that.challengeState = true;
+}
 //if(that.localCopy.cardCache.length > 1)
     }
 
@@ -143,10 +146,11 @@ card.selected = false;
 
 challengeAddMore () {
 // add current turnCards to cache
+this.gameOverCheck();
 if(!this.localCopy.cardCache) {
   this.localCopy.cardCache = [];
 }
-this.localCopy.cardCache.concat(this.localCopy.turnCards);
+this.localCopy.cardCache = this.localCopy.cardCache.concat(this.localCopy.turnCards);
 this.localCopy.turnCards = ["X"];
 this.challengeState = false;
 this.challengeAddMoreState = true
@@ -155,9 +159,13 @@ this.challengeAddMoreState = true
 challengePass() {
   // the opponent can now add more cards OR close the round
   //I can only pass or challenge from next time
+  this.gameOverCheck()
 this.challengeState = false;
 this.localCopy.whoPassed = this.playerName;
-this.localCopy.cardCache.concat(this.localCopy.turnCards);
+if(!this.localCopy.cardCache){
+  this.localCopy.cardCache = []
+}
+this.localCopy.cardCache = this.localCopy.cardCache.concat(this.localCopy.turnCards);
 this.localCopy.turnCards = ["X"];
 this.localCopy.whoseTurn = this.otherPlayerName;
 this.syncDB();
@@ -174,6 +182,16 @@ this.localCopy.whoseTurn = this.playerName;
 this.syncDB();
 
 }
+gameOverCheck() {
+if(this.localCopy[this.otherPlayerName].length == 0) {
+    //other player won
+    this.localCopy.winnerName = this.otherPlayerName;
+    this.syncDB();
+  return true;
+} else{
+  return false;
+}
+}
 
 challengeYes(){
 var fraud = false; 
@@ -189,10 +207,7 @@ this.localCopy.turnCards.forEach(n => {
 
 if(!fraud) {
   //no fraud
-  if(this.localCopy[this.otherPlayerName].length == 0) {
-    //other player won
-    this.localCopy.winnerName = this.otherPlayerName;
-  } else {
+  if(!this.gameOverCheck()) {
     if(this.localCopy.whoPassed != ""){  // if round is old ie whoPassed is not empty
  this.localCopy.cardCache.forEach(function(n){
   that.localCopy[that.playerName].push({value:n, selected: false});
@@ -208,7 +223,7 @@ this.localCopy.whoseTurn = this.otherPlayerName;
   }
 
 } else {
-  if(this.localCopy.whoPassed != ""){  // if round is old ie whoPassed is not empty
+  if(this.localCopy.whoPassed != "" || this.challengeAddMoreState){  // if round is old ie whoPassed is not empty
  this.localCopy.cardCache.forEach(function(n){
   that.localCopy[that.otherPlayerName].push({value:n, selected: false});
 })
@@ -219,10 +234,14 @@ this.localCopy.whoseTurn = this.otherPlayerName;
 })
 this.localCopy.whoseTurn = this.playerName;
 }
+this.localCopy.whoPassed = "";
 this.localCopy.turnCards = ["X"];
 this.challengeState = false;
+this.localCopy.cardCache = [];
+this.challengeState = false;
+this.challengeAddMoreState = false;
+
 this.syncDB();
-  
 }
 
 syncDB() {
