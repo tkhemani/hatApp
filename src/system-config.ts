@@ -1,18 +1,22 @@
 /***********************************************************************************************
  * User Configuration.
  **********************************************************************************************/
-/** Map relative paths to URLs. */
+/** Map relative index.jspaths to URLs. */
 const map: any = {
   'firebase': 'vendor/firebase/lib/firebase-web.js',
   'angularfire2': 'vendor/angularfire2',
-  '@angular2-material': 'vendor/@angular2-material'
+  '@angular2-material': 'vendor/@angular2-material',
+   'lodash': 'vendor/lodash/lodash.js'
 };
 
 /** User packages configuration. */
 const packages: any = {
    angularfire2: {
     defaultExtension: 'js',
-    main: 'angularfire2.js'
+    main: 'angularfire2.js',
+  },lodash: 
+  {main:'index.js', 
+  defaultExtension:'js'
   }
 };
 
@@ -23,7 +27,16 @@ const materialPkgs:string[] = [
   'card',
   'input',
   'radio',
-  'checkbox'
+  'checkbox',
+  'toolbar',
+  'icon',
+'sidenav',
+'list',
+'grid-list',
+'progress-bar',
+'progress-circle',
+'slide-toggle',
+'tabs'
 ];
 
 materialPkgs.forEach((pkg) => {
