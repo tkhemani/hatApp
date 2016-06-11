@@ -1,10 +1,65 @@
-<input type="text" [value]="playerName" placeholder="Name Please...">
-<button type="button" (onClick)="startGame">Go..</button>
-<button md-button color="primary">SNIFF</button> 
-<h1>{{ item | async | json }}</h1>
+<!-- <md-input type="text" #playerName placeholder="Name..." (keyup.enter)="startGame(playerName.value)"></md-input> -->
+ <div style="margin: 10px;">
+ <md-radio-group >
+            <md-radio-button (click)="playerName = 'tarun'; gameStarted = false"  value="tarun" checked = "true">T</md-radio-button>
+            <md-radio-button (click)="playerName = 'hima'; gameStarted = false" value="hima">H</md-radio-button>
+          </md-radio-group>
+<button md-raised-button (click)="startGame()" color="accent">Play!</button> 
+ <button md-fab style="float: right;background:#C8D0BC" (click)="resetGame()">
+      <md-icon>Reset</md-icon>
+  </button>
+
+  </div>
+ 
+
+<!-- <li [hidden]="gameStarted==false" *ngFor="let card of localCopy[playerName.value]">
+  {{ card}}
+</li> -->
+<div [class.hideGame]="!gameStarted" class="card-container flex-container wrap" >
+    <md-card #singleCard [class.hideGame]="!gameStarted" (click)="cardClicked(singleCard, card)" class="flex-item" *ngFor="let card of localCopy[playerName]">
+    <md-card-title>{{card.value}}</md-card-title>
+<!--     <span md-line>test</span> -->
+    </md-card>
+    </div>
+
+<!-- <h1>{{ item | async | json }}</h1>
   <input type="text" #newname placeholder="Name" />
   <input type="text" #newsize placeholder="Size" />
   <br />
   <button (click)="save(newname.value)">Set Name</button>
   <button (click)="update(newsize.value)">Update Size</button>
   <button (click)="delete()">Delete</button>
+
+ -->
+
+ <style>
+ .hideGame{
+   display:none;
+ }
+ .flex-container {
+  padding: 10px;
+  margin: 10px;
+  list-style: none;
+  -ms-box-orient: horizontal;
+  display: flex;
+}
+.wrap    { 
+  flex-wrap: wrap;
+}  
+
+.flex-item {
+  background: #F9F4F3;
+  padding: 5px;
+  margin: 5px;
+/*   
+  width: 100px;
+  height: 100px;
+  
+  
+  line-height: 100px;
+  color: white;
+  font-weight: bold;
+  font-size: 2em;
+  text-align: center; */
+}
+ </style>
