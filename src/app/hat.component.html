@@ -1,1 +1,10 @@
-Hello...
+<input type="text" [value]="playerName" placeholder="Name Please...">
+<button type="button" (onClick)="startGame">Go..</button>
+<button md-button color="primary">SNIFF</button> 
+<h1>{{ item | async | json }}</h1>
+  <input type="text" #newname placeholder="Name" />
+  <input type="text" #newsize placeholder="Size" />
+  <br />
+  <button (click)="save(newname.value)">Set Name</button>
+  <button (click)="update(newsize.value)">Update Size</button>
+  <button (click)="delete()">Delete</button>

@@ -7,11 +7,12 @@ BROWSE
 FEATURES
 Uses Firebase DB 
 Build with Angular 2
+Material Design goodness
 
 UPCOMING FEATURES
 Cloud deploy on Firebase
 Encryption
-Material Design goodness
 
+offline template compiler for faster initial load
 
 ISSUES

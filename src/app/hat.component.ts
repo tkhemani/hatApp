@@ -1,24 +1,19 @@
 import { Component } from '@angular/core';
 import { AngularFire, FirebaseObjectObservable } from 'angularfire2';
+import { MD_BUTTON_DIRECTIVES } from '@angular2-material/button';
 
 @Component({
   moduleId: module.id,
   selector: 'hat-app',
-  //templateUrl: 'hat.component.html',
- template: `
-  <h1>{{ item | async | json }}</h1>
-  <input type="text" #newname placeholder="Name" />
-  <input type="text" #newsize placeholder="Size" />
-  <br />
-  <button (click)="save(newname.value)">Set Name</button>
-  <button (click)="update(newsize.value)">Update Size</button>
-  <button (click)="delete()">Delete</button>
-  `,
-  styleUrls: ['hat.component.css']
+  templateUrl: 'hat.component.html',
+  styleUrls: ['hat.component.css'],
+  directives: [MD_BUTTON_DIRECTIVES]
 })
 export class HatAppComponent {
+  playerName: string;
   item: FirebaseObjectObservable<any>;
   constructor(af: AngularFire) {
+    this.playerName = "";
     this.item = af.database.object('/item');
   }
   save(newName: string) {
