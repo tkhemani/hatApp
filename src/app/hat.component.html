@@ -4,6 +4,10 @@
       <md-icon>menu</md-icon>
     </button> -->
     HAT MPGs
+    <span [class.hideGame]="!gameStarted">
+<span *ngIf="!myTurn">     ( Not Your Turn )</span>
+<span *ngIf="myTurn">     ( Your Turn )</span>
+    </span>
     <button md-fab style="float: right;background:#C8D0BC" (click)="resetGame()">
 <!--       <md-icon>Reset</md-icon> -->
 <md-icon>refresh</md-icon>
@@ -21,7 +25,12 @@
 <!-- <md-icon>play_arrow</md-icon> -->
 </button> 
 
+<span *ngIf ="gameStarted" class="opponentStatus">Opponent's Cards Left: {{localCopy[otherPlayerName].length}}</span>
   </div>
+
+ <md-card [class.hideGame]="!gameStarted" *ngIf="localCopy.winnerName == otherPlayerName"> <md-card-title>YOU LOOSE :( </md-card-title></md-card>
+    <md-card [class.hideGame]="!gameStarted" *ngIf="localCopy.winnerName == playerName"> <md-card-title>YOU WIN :) </md-card-title></md-card>
+
  
 
 <!-- <li [hidden]="gameStarted==false" *ngFor="let card of localCopy[playerName.value]">
@@ -53,8 +62,6 @@
 
 <md-card [class.hideGame]="!gameStarted">
 <md-card-title>Your Cards... 
-<span *ngIf="!myTurn">     (Not Your Turn)</span>
-<span *ngIf="myTurn">     (Your Turn)</span>
 </md-card-title>
 <md-card-content>
 <div  class="card-container  wrap" >
@@ -66,7 +73,7 @@
 </md-card-content>
 </md-card>
 
-<md-card [class.hideGame]="!(localCopy.turnCards.length >1 && myTurn)">
+<md-card [class.hideGame]="!(localCopy.turnCards.length >1 && myTurn && !challengeState)">
 <md-card-title>Play Selected As...</md-card-title>
 <md-card-content>
 <div  class="card-container  wrap" >
@@ -139,6 +146,16 @@
   z-index: 1;
   margin-top: 10px
 }
+
+.opponentStatus {
+  color: white;
+  position: absolute;
+  right: 3%;
+  top: 14px;
+  z-index: 1;
+  margin-top: 10px
+}
+
 
 md-radio-button, md-checkbox {
   margin: 16px 8px;

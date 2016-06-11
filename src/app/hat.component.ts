@@ -48,7 +48,7 @@ export class HatAppComponent {
   root = null;
   playerName = "";
  // player = null;
- localCopy = {"resetState": false, "p1": ["X"], "p2": ["X"], "turnCards": ["X"], "playAs": "", "whoseTurn":"p1", "cardOptions": this.cardOptions};
+ localCopy = {"winnerName": "", resetState: false, "p1": ["X"], "p2": ["X"], "turnCards": ["X"], "playAs": "", "whoseTurn":"p1", "cardOptions": this.cardOptions};
   //localCopy = {};
   constructor(af: AngularFire) {
     ;
@@ -59,6 +59,12 @@ export class HatAppComponent {
     var that = this;
     this.root.subscribe(data => {
       that.localCopy = data;
+      if(!that.localCopy.p1) {
+        that.localCopy.p1 = []
+      }
+      if(!that.localCopy.p2) {
+        that.localCopy.p2 = []
+      }
 that.myTurn = (that.localCopy.whoseTurn == that.playerName);
     //that.localCopy.turnCards =
     if(that.myTurn && that.localCopy.turnCards) {
@@ -83,11 +89,15 @@ that.myTurn = (that.localCopy.whoseTurn == that.playerName);
       this.playerName = "p1";      
     }
     this.gameStarted = true;
-    this.localCopy[this.playerName] = [{value: "1", selected: false},{value: "2", selected: false},{value: "3", selected: false},{value: "4", selected: false}];
     if(this.playerName =="p1") {
     //  this.resetGame()
     this.otherPlayerName = "p2";
         this.localCopy[this.playerName] =  [{value: "5", selected: false},{value: "6", selected: false},{value: "7", selected: false},{value: "8", selected: false}];
+    } else {
+      this.otherPlayerName = "p1";
+         // this.localCopy[this.playerName] = [{value: "1", selected: false},{value: "2", selected: false},{value: "3", selected: false},{value: "4", selected: false}];
+          this.localCopy[this.playerName] = [{value: "1", selected: false}];
+
     }
   this.syncDB();
  // this.testitem = { name: playerName, cards: [10,9,8,10] };
@@ -96,15 +106,16 @@ that.myTurn = (that.localCopy.whoseTurn == that.playerName);
   }
 
   resetGame() {    
-     this.localCopy = {"resetState": true, "p1": ["X"], "p2": ["X"], "turnCards": ["X"], "playAs": "", "whoseTurn":"p1", "cardOptions": this.cardOptions};
+     this.localCopy = {"winnerName": "", "resetState": true, "p1": ["X"], "p2": ["X"], "turnCards": ["X"], "playAs": "", "whoseTurn":"p1", "cardOptions": this.cardOptions};
      this.syncDB();
      this.gameStarted = false;
   }
   cardOptionClicked(card) {
- if(this.myTurn) {
+ if(this.myTurn && !this.challengeState) {
        if(!card.selected){
      this.localCopy.playAs = card.value;     
-     card.selected = true; 
+      this.localCopy.cardOptions.forEach(n => n.selected = false);
+      card.selected = true;
     } else {
      // if (index > -1) {
     this.localCopy.playAs = null;
@@ -140,17 +151,25 @@ this.localCopy.turnCards.forEach(n => {
 
 if(!fraud) {
   //no fraud
-  this.localCopy.turnCards.forEach(function(n){
+  if(this.localCopy[this.otherPlayerName].length == 0) {
+    //other player won
+    this.localCopy.winnerName = this.otherPlayerName;
+  } else {
+      this.localCopy.turnCards.forEach(function(n){
   that.localCopy[that.playerName].push({value:n, selected: false});
 })
-this.localCopy.whoseTurn = this.playerName;
+this.localCopy.whoseTurn = this.otherPlayerName;
+  }
+
 } else {
    that.localCopy.turnCards.forEach(function(n){
   that.localCopy[that.otherPlayerName].push({value:n, selected: false});
 })
-this.localCopy.whoseTurn = this.otherPlayerName;
-this.syncDB();
+this.localCopy.whoseTurn = this.playerName;
 }
+this.localCopy.turnCards = ["X"];
+this.challengeState = false;
+this.syncDB();
   
 }
 
@@ -159,7 +178,7 @@ syncDB() {
 }
   cardClicked(card) {
    
-    if(this.myTurn) {
+    if(this.myTurn && !this.challengeState) {
        if(!card.selected){
      this.localCopy.turnCards.push(card.value);     
      card.selected = true; 
