@@ -105,7 +105,7 @@
   </md-tab>
   <md-tab>
     <template md-tab-label>
-      <span (click)="resetHangman()">Hangman</span> </template>
+      <span>Hangman</span> </template>
     <template md-tab-content>
       <div class="card-container  wrap">
         <md-card style="height: 33px;">
@@ -122,17 +122,19 @@
             <div *ngIf="!localCopy.hang.isMovie1GameOver">
               <md-card *ngIf="localCopy.hang.movie1string.length >1">
                 <div class="card-container  wrap">
-                  <md-card #singleCard [class.hideGame]="!movie1Entered" [class.selectCard]="card.selected" (click)="cardClicked(card)" class="flex-item"
+                  <md-card #singleCard  (click)="cardClicked(card)" class="flex-item"
                     *ngFor="let card of localCopy.hang.movie1">
-                    <md-card-title *ngIf="card.show">{{card.value}}</md-card-title>
-                    <md-card-title *ngIf="!card.show">_</md-card-title>
+                    <md-card-title *ngIf="card.show && card.value != ' '">{{card.value}}</md-card-title>
+                    <md-card-title *ngIf="!card.show && card.value != ' '">_</md-card-title>
+                    <md-card-title *ngIf="card.value == ' '">-</md-card-title>
+                    
                     <!--     <span md-line>test</span> -->
                   </md-card>
                 </div>
               </md-card>
               <md-card *ngIf="localCopy.hang.movie1string.length >1" style="margin-top: 10px;">
                 <div class="card-container  wrap">
-                  <md-card #singleCard [class.hideGame]="!movie1Entered" [class.selectCard]="card.selected" (click)="cardClicked(card)" class="hangmanOptions-item"
+                  <md-card #singleCard  [class.selectCard]="card.selected" (click)="cardClicked(card)" class="hangmanOptions-item"
                     *ngFor="let card of localCopy.hang.movie1state; let i = index">
                     <md-card-title>
                       <md-input type="text" [placeholder]="card.placeHolder" [(ngModel)]="localCopy.hang.movie1state[i].valueEntered" [disabled]="card.optionUsed"
@@ -149,6 +151,51 @@
 
           </md-card-content>
         </md-card>
+
+<!--2nd player hangman-->
+
+<md-card class="hangman-item">
+          <md-card-content>
+            <md-icon>movie_filter</md-icon>
+            <md-input type="text" #playerName1 maxLength="20" placeholder="Enter Movie for H..." (keyup.enter)="startHangman2(playerName1.value);playerName1.value = '' ">
+              <span md-suffix>({{playerName1.characterCount}} of 20)</span>
+            </md-input>
+
+            <div *ngIf="!localCopy.hang.isMovie2GameOver">
+              <md-card *ngIf="localCopy.hang.movie2string.length >1">
+                <div class="card-container  wrap">
+                  <md-card #singleCard [class.selectCard]="card.selected" (click)="cardClicked(card)" class="flex-item"
+                    *ngFor="let card of localCopy.hang.movie2">
+                    <md-card-title *ngIf="card.show && card.value != ' '">{{card.value}}</md-card-title>
+                    <md-card-title *ngIf="!card.show && card.value != ' '">_</md-card-title>
+                    <md-card-title *ngIf="card.value == ' '">-</md-card-title>
+                    
+                    <!--     <span md-line>test</span> -->
+                  </md-card>
+                </div>
+              </md-card>
+              <md-card *ngIf="localCopy.hang.movie2string.length >1" style="margin-top: 10px;">
+                <div class="card-container  wrap">
+                  <md-card #singleCard [class.selectCard]="card.selected" (click)="cardClicked(card)" class="hangmanOptions-item"
+                    *ngFor="let card of localCopy.hang.movie2state; let i = index">
+                    <md-card-title>
+                      <md-input type="text" [placeholder]="card.placeHolder" [(ngModel)]="localCopy.hang.movie2state[i].valueEntered" [disabled]="card.optionUsed"
+                        (keyup)="option2Clicked(card)"></md-input>
+                    </md-card-title>
+                    <!--     <span md-line>test</span> -->
+                  </md-card>
+                </div>
+              </md-card>
+              <md-card *ngIf="localCopy.hang.isMovie2GameOver">
+                <md-card-title> Answer: {{localCopy.hang.movie1string}}</md-card-title>
+              </md-card>
+            </div>
+
+          </md-card-content>
+        </md-card>
+
+
+
       </div>
     </template>
   </md-tab>
@@ -162,6 +209,10 @@
 <style>
   .hideGame {
     display: none;
+  }
+
+  .showGame {
+    display: block;
   }
   
   .flex-container {
