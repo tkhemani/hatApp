@@ -61,7 +61,7 @@ challengeAddMoreState = false;
   playerName = "";
  // player = null;
  //localCopy = {}
- localCopy = {"hang" : {"movie1string": "X", "isMovie1success": false, "isMovie2success": false, "isMovie1GameOver": false, "isMovie2GameOver": false, "movie2string": "X", "movie1": ["X"], "movie1state": ["X"], "movie2state": ["X"], "score1" : "0", "movie2": ["X"], "score2": "0"}, "cardCache": [], "whoPassed" : "", "winnerName": "", resetState: false, "p1": ["X"], "p2": ["X"], "turnCards": ["X"], "playAs": "", "whoseTurn":"p1", "cardOptions": this.cardOptions};
+ localCopy = {"hang" : {"movie1string": "X", "isMovie1success": false, "isMovie2success": false, "isMovie1GameOver": false, "isMovie2GameOver": false, "movie2string": "X", "movie1": ["X"], "movie1state": ["X"], "movie2state": ["X"], "score1" : 0, "movie2": ["X"], "score2": 0}, "cardCache": [], "whoPassed" : "", "winnerName": "", resetState: false, "p1": ["X"], "p2": ["X"], "turnCards": ["X"], "playAs": "", "whoseTurn":"p1", "cardOptions": this.cardOptions};
   //"hang" : [{"p1": {"word": "", "score": ""}}, {"p2": {"word": "", "score": ""}}]
   //localCopy = {};
   constructor(af: AngularFire) {
@@ -132,10 +132,13 @@ if(that.localCopy.whoPassed != that.localCopy.whoseTurn) {
     if(this.localCopy.hang.movie1.length >1) {
     this.movie1Entered = true;      
     }
+    if(this.localCopy.hang.isMovie1GameOver) {
+      this.localCopy.hang.isMovie1GameOver = true;
+    }
   }
 
   resetGame() {    
-     this.localCopy = {"hang" : {"isMovie1GameOver": false, "isMovie2GameOver": false, "isMovie1success": false, "isMovie2success": false, "movie1string": "X", "movie2string": "X", "movie1": ["X"], "score1" : "0", "movie1state": ["X"], "movie2state": ["X"], "movie2": ["X"], "score2": "0"}, cardCache: [], whoPassed: "", "winnerName": "", "resetState": true, "p1": ["X"], "p2": ["X"], "turnCards": ["X"], "playAs": "", "whoseTurn":"p1", "cardOptions": this.cardOptions};
+     this.localCopy = {"hang" : {"isMovie1GameOver": false, "isMovie2GameOver": false, "isMovie1success": false, "isMovie2success": false, "movie1string": "X", "movie2string": "X", "movie1": ["X"], "score1" : 0, "movie1state": ["X"], "movie2state": ["X"], "movie2": ["X"], "score2": 0}, cardCache: [], whoPassed: "", "winnerName": "", "resetState": true, "p1": ["X"], "p2": ["X"], "turnCards": ["X"], "playAs": "", "whoseTurn":"p1", "cardOptions": this.cardOptions};
      this.syncDB();
      this.gameStarted = false;
   }
@@ -313,6 +316,8 @@ card.selected = false;
 resetHangman() {
   this.movie1Entered = false;
   this.movie2Entered = false;
+  this.localCopy.hang.movie1string = "";
+    this.localCopy.hang.movie2string = "";
  this.resetGame();
 }
 checkHangGameOver(movie) {
@@ -326,15 +331,18 @@ this.localCopy.hang[movie].forEach(function(m:any){
 })
 if(falseCount == 0) {
   this.localCopy.hang.isMovie1success = true;
+  this.localCopy.hang.score1 +=1
+    this.localCopy.hang.isMovie1GameOver = true;
 }
 
 if(!this.localCopy.hang.isMovie1success) {
   //check lost 
 var optionsUsedCount = 0;
+var that = this;
 this.localCopy.hang.movie1state.forEach(function(n: any){
 
   if(n.optionUsed == false) {
-    this.localCopy.hang.isMovie1success = false;
+    that.localCopy.hang.isMovie1success = false;
   } else {
     optionsUsedCount += 1
   }
@@ -343,8 +351,10 @@ this.localCopy.hang.movie1state.forEach(function(n: any){
 //check game over
 if(optionsUsedCount == 7) {
   this.localCopy.hang.isMovie1GameOver = true;
+  this.localCopy.hang.score1 -=1
 }
 }
+this.syncDB();
 }
 
 option1Clicked(card) {
@@ -367,11 +377,14 @@ option1Clicked(card) {
   card.valueEntered = n;
   card.optionUsed = true;
   }
-  this.syncDB();
-      //this.checkHangGameOver("movie1");
+  
+  this.checkHangGameOver("movie1");
 }
 
   startHangman1 (value) {
+    this.localCopy.hang.isMovie1success=false;
+        this.localCopy.hang.isMovie1GameOver=false;
+
     this.localCopy.hang.movie1string = value.toUpperCase();
     var movie1 = [];
     //var that = this;
