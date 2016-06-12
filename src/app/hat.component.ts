@@ -6,6 +6,8 @@ import {MD_CARD_DIRECTIVES} from '@angular2-material/card';
 import {MdRadioButton, MdRadioGroup, MdRadioDispatcher} from '@angular2-material/radio';
 import {MdIcon, MdIconRegistry} from '@angular2-material/icon';
 import {MdToolbar} from '@angular2-material/toolbar';
+import {MD_TABS_DIRECTIVES} from '@angular2-material/tabs/tabs';
+
 //import * as _ from 'lodash';
 
 declare var _:any;
@@ -15,12 +17,22 @@ declare var _:any;
   selector: 'hat-app',
   templateUrl: 'hat.component.html',
   styleUrls: ['hat.component.css'],
-  directives: [ MdInput, MD_BUTTON_DIRECTIVES, MD_CARD_DIRECTIVES,MdRadioGroup,MdIcon,MdToolbar,
+  directives: [ MD_TABS_DIRECTIVES, MdInput, MD_BUTTON_DIRECTIVES, MD_CARD_DIRECTIVES,MdRadioGroup,MdIcon,MdToolbar,
     MdRadioButton],
   providers: [MdRadioDispatcher,MdIconRegistry]
 })
 
 export class HatAppComponent {
+
+//hang
+movie1Entered = false;
+movie2Entered = false;
+cardLocal = {
+  valueEntered: "hell",
+  optionUsed: false
+  };
+
+
 challengeAddMoreState = false;
   //heroes = ['Windstorm', 'Bombasto', 'Magneta', 'Tornado'];
   //testitem = { name: "test", cards: [1,2] };
@@ -49,17 +61,23 @@ challengeAddMoreState = false;
   playerName = "";
  // player = null;
  //localCopy = {}
- localCopy = {"cardCache": [], "whoPassed" : "", "winnerName": "", resetState: false, "p1": ["X"], "p2": ["X"], "turnCards": ["X"], "playAs": "", "whoseTurn":"p1", "cardOptions": this.cardOptions};
+ localCopy = {"hang" : {"movie1string": "X", "isMovie1success": false, "isMovie2success": false, "isMovie1GameOver": false, "isMovie2GameOver": false, "movie2string": "X", "movie1": ["X"], "movie1state": ["X"], "movie2state": ["X"], "score1" : "0", "movie2": ["X"], "score2": "0"}, "cardCache": [], "whoPassed" : "", "winnerName": "", resetState: false, "p1": ["X"], "p2": ["X"], "turnCards": ["X"], "playAs": "", "whoseTurn":"p1", "cardOptions": this.cardOptions};
+  //"hang" : [{"p1": {"word": "", "score": ""}}, {"p2": {"word": "", "score": ""}}]
   //localCopy = {};
   constructor(af: AngularFire) {
     ;
     console.clear();
     //this.af = af;
+var that = this;
+
+    
+
 
     this.root = af.database.object('/root');
-    var that = this;
+    
     this.root.subscribe(data => {
       that.localCopy = data;
+      that.processHangmanData();
       if(!that.localCopy.p1) {
         that.localCopy.p1 = []
       }
@@ -110,8 +128,14 @@ if(that.localCopy.whoPassed != that.localCopy.whoseTurn) {
  //this.player.set([10,9,8,10]);
   }
 
+  processHangmanData() {
+    if(this.localCopy.hang.movie1.length >1) {
+    this.movie1Entered = true;      
+    }
+  }
+
   resetGame() {    
-     this.localCopy = {cardCache: [], whoPassed: "", "winnerName": "", "resetState": true, "p1": ["X"], "p2": ["X"], "turnCards": ["X"], "playAs": "", "whoseTurn":"p1", "cardOptions": this.cardOptions};
+     this.localCopy = {"hang" : {"isMovie1GameOver": false, "isMovie2GameOver": false, "isMovie1success": false, "isMovie2success": false, "movie1string": "X", "movie2string": "X", "movie1": ["X"], "score1" : "0", "movie1state": ["X"], "movie2state": ["X"], "movie2": ["X"], "score2": "0"}, cardCache: [], whoPassed: "", "winnerName": "", "resetState": true, "p1": ["X"], "p2": ["X"], "turnCards": ["X"], "playAs": "", "whoseTurn":"p1", "cardOptions": this.cardOptions};
      this.syncDB();
      this.gameStarted = false;
   }
@@ -282,4 +306,98 @@ card.selected = false;
   delete() {
     this.item.remove();
   }
+
+
+
+
+resetHangman() {
+  this.movie1Entered = false;
+  this.movie2Entered = false;
+ this.resetGame();
+}
+checkHangGameOver(movie) {
+
+  //check if won
+  var falseCount = 0;
+this.localCopy.hang[movie].forEach(function(m:any){
+      if(m.show == false){
+       falseCount += 1;
+      } 
+})
+if(falseCount == 0) {
+  this.localCopy.hang.isMovie1success = true;
+}
+
+if(!this.localCopy.hang.isMovie1success) {
+  //check lost 
+var optionsUsedCount = 0;
+this.localCopy.hang.movie1state.forEach(function(n: any){
+
+  if(n.optionUsed == false) {
+    this.localCopy.hang.isMovie1success = false;
+  } else {
+    optionsUsedCount += 1
+  }
+})
+
+//check game over
+if(optionsUsedCount == 7) {
+  this.localCopy.hang.isMovie1GameOver = true;
+}
+}
+}
+
+option1Clicked(card) {
+  console.log(card);
+    var n = card.valueEntered.toUpperCase();
+  if(n == "A" || n == "E" || n == "I" || n == "O" ||n == "U") {
+  card.valueEntered = "";
+  card.optionUsed = false;
+  } else if(this.localCopy.hang.movie1string.indexOf(n) != -1) {
+    //show the letter in movie
+    this.localCopy.hang.movie1.forEach(function(m:any){     
+      if(m.value == n){
+        m.show = true;
+      }
+    })
+    
+    card.valueEntered = "";
+    card.optionUsed = false;
+  } else {
+  card.valueEntered = n;
+  card.optionUsed = true;
+  }
+  this.syncDB();
+      //this.checkHangGameOver("movie1");
+}
+
+  startHangman1 (value) {
+    this.localCopy.hang.movie1string = value.toUpperCase();
+    var movie1 = [];
+    //var that = this;
+    //that.localCopy.hang.movie1 = [];
+    value.toUpperCase().split('').forEach(function(n){ 
+      if(n == "A" || n == "E" || n == "I" || n == "O" ||n == "U") {
+              movie1.push({"value":n, "show":true});
+              //that.localCopy.hang.movie1.push(n);
+              //that.localCopy.hang.movie1.push({"value":n, "show":true});
+              console.log(n);
+      } else {
+                      console.log(n);
+                      movie1.push({"value":n, "show":false});
+      //that.localCopy.hang.movie1.push({"value":n, "show":false});        
+      }
+    })
+this.localCopy.hang.movie1 = movie1;
+    this.movie1Entered = true;
+    var movie1state = []
+    "hangman".toUpperCase().split('').forEach(function(n){ 
+    movie1state.push({"placeHolder":n, "optionUsed":false, "valueEntered": ""});
+    
+    })
+      this.localCopy.hang.movie1state = movie1state;
+
+this.syncDB();
+  }
+
 }
