@@ -12,6 +12,8 @@ Material Design goodness
 
 
 UPCOMING FEATURES
+start game only when both player are in the session
+deploy to gh pages
 puppy like md-toolbar at top
 *name dropdown
 *Minify, uglify and gzip build code
