@@ -39,6 +39,7 @@ UPCOMING HANGMAN FEATURES
 * Refresh should not refresh Bluff and vice versa
 * don't subs 1 for wrong guess
 * give more points for less options used
+* points can be redeemed for options in case player is out of options for a game
 --- 
 
 UPCOMING BLUFF FEATURES
