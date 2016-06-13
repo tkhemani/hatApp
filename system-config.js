@@ -3,10 +3,10 @@
  **********************************************************************************************/
 /** Map relative index.jspaths to URLs. */
 var map = {
-    'firebase': 'vendor/firebase/lib/firebase-web.js',
-    'angularfire2': 'vendor/angularfire2',
-    '@angular2-material': 'vendor/@angular2-material',
-    'lodash': 'vendor/lodash/lodash.js'
+    'firebase': 'hatApp/vendor/firebase/lib/firebase-web.js',
+    'angularfire2': 'hatApp/vendor/angularfire2',
+    '@angular2-material': 'hatApp/vendor/@angular2-material',
+    'lodash': 'hatApp/vendor/lodash/lodash.js'
 };
 /** User packages configuration. */
 var packages = {
@@ -64,8 +64,8 @@ barrels.forEach(function (barrelName) {
 // Apply the CLI SystemJS configuration.
 System.config({
     map: {
-        '@angular': 'vendor/@angular',
-        'rxjs': 'vendor/rxjs',
+        '@angular': 'hatApp/vendor/@angular',
+        'rxjs': 'hatApp/vendor/rxjs',
         'main': 'main.js'
     },
     packages: cliSystemConfigPackages
