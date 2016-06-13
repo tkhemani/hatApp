@@ -37,7 +37,8 @@ UPCOMING HANGMAN FEATURES
 * Notification or Color indicator when action required like for giving movie
 * Chat
 * Refresh should not refresh Bluff and vice versa
-
+* don't subs 1 for wrong guess
+* give more points for less options used
 --- 
 
 UPCOMING BLUFF FEATURES
