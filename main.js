@@ -1,7 +1,7 @@
 "use strict";
 var platform_browser_dynamic_1 = require('@angular/platform-browser-dynamic');
 var core_1 = require('@angular/core');
-var _1 = require('./app/');
+var _1 = require('./hatApp/app/');
 var angularfire2_1 = require('angularfire2');
 var http_1 = require('@angular/http');
 if (_1.environment.production) {
