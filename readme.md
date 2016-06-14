@@ -49,6 +49,7 @@ UPCOMING HANGMAN FEATURES
 - [ ] give more points for less options used
 - [ ] points can be redeemed for options in case player is out of options for a game
 - [ ] Optionally Presist changes to DB for ever so as to never reset game
+
 --- 
 
 UPCOMING BLUFF FEATURES
