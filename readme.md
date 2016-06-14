@@ -1,4 +1,12 @@
-LOCAL SETUP and HOSTING
+LOCAL DEV SETUP 
+* install nodeJS
+* npm install -g angular-cli
+* npm install
+* ng serve
+
+--- 
+
+LOCAL HOSTING
 * xcopy C:\temp\hat\dist C:\inetpub\wwwroot /s /e
 * Next Browse http://<machine name>/index.html
 
