@@ -25,6 +25,7 @@ FIREBASE HOSTING
 --- 
 
 UPCOMING GLOBAL FEATURES
+- [ ] CHROME/ANDROID NOTIFICATIONS WHEN ACTIONS ARE REQUIRED FROM PLAYER
 - [ ] start game only when both player are in the session
 - [ ] deploy to gh pages
 - [ ] puppy like md-toolbar at top
