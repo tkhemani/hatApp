@@ -1,5 +1,6 @@
 LOCAL DEV SETUP 
 * install nodeJS
+* npm install typings --global
 * npm install -g angular-cli
 * npm install
 * ng serve
