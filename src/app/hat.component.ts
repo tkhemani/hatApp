@@ -13,6 +13,7 @@ import {MD_TABS_DIRECTIVES} from '@angular2-material/tabs/tabs';
 declare var _:any;
  
 @Component({
+    moduleId: module.id,
     selector: 'hat-app',
     templateUrl: 'hat.component.html',
     styleUrls: ['hat.component.css'],

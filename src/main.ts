@@ -8,11 +8,15 @@ if (environment.production) {
   enableProdMode();
 }
 
-var abc:any = 'https://hatplay.firebaseio.com';
 //noinspection TypeScriptValidateTypes
 bootstrap(HatAppComponent, [
   HTTP_PROVIDERS,
   FIREBASE_PROVIDERS,
-  defaultFirebase(abc)
+  defaultFirebase({
+    apiKey: "uuiXDBcfoae3cuvuLGBTRXQk2ex6WBYzgkqIcvEU",
+    authDomain: null,
+    databaseURL: "https://hatplay.firebaseio.com",
+    storageBucket: null,
+  })
 ]);
 
