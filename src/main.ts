@@ -8,9 +8,11 @@ if (environment.production) {
   enableProdMode();
 }
 
+var abc:any = 'https://hatplay.firebaseio.com';
+//noinspection TypeScriptValidateTypes
 bootstrap(HatAppComponent, [
   HTTP_PROVIDERS,
   FIREBASE_PROVIDERS,
-  defaultFirebase('https://hatplay.firebaseio.com')
+  defaultFirebase(abc)
 ]);
 
